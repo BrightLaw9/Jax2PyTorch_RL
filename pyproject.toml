@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "miniport"
+version = "0.1.0"
+description = "Execution-grounded process rewards for small JAX-to-PyTorch ports"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26,<3", "jax>=0.4.30,<0.7", "torch>=2.4,<3"]
+
+[project.scripts]
+miniport = "miniport.cli:main"
+
+[project.optional-dependencies]
+review = ["ipywidgets>=8,<9", "notebook>=7,<8"]
+
+[tool.setuptools.packages.find]
+include = ["miniport*"]
+
+[tool.setuptools.package-data]
+miniport = ["*.txt"]

@@ -1,0 +1,23 @@
+{
+  "question": "Does learning longer-term action value add anything beyond immediate verifier rewards?",
+  "conditions": [
+    "frozen_baseline",
+    "terminal_only_rl",
+    "immediate_verifier_rl",
+    "outcome_grounded_action_value_rl"
+  ],
+  "feedback": "fixed_structured_summary_in_every_condition",
+  "label_source": "verified_training_task_outcomes_from_multiple_continuations",
+  "initial_candidate_actions_per_checkpoint": 2,
+  "initial_continuations_per_action": 4,
+  "continuation_policy": "frozen_versioned_checkpoint",
+  "value_target": "success_probability_given_state_action_remaining_budget_and_continuation_policy",
+  "human_labels": "audit_only",
+  "rollouts": "sequential",
+  "heldout_results_used_for_training": false,
+  "status": "pipeline_implemented_local_smoke_tests_passed_full_cuda_training_pending",
+  "deployment": {
+    "training": "bare-metal Linux GPU venv, CPU subprocess verifiers, no Docker",
+    "evaluation": "Mac MLX Apple GPU inference, Docker CPU verifiers"
+  }
+}

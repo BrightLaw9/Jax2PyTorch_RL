@@ -1,0 +1,31 @@
+{
+  "run_dir": "artifacts/gpu-run",
+  "model": "Qwen/Qwen2.5-Coder-14B-Instruct",
+  "revision": "main",
+  "gpu_memory_gb": 16,
+  "context_cap": 4096,
+  "max_new_tokens": 1024,
+  "temperature": 0.6,
+  "states_per_task": 8,
+  "candidate_resamples": 4,
+  "continuations_per_action": 4,
+  "paired_state_limit": 4,
+  "verifier_timeout": 60,
+  "seed": 42,
+  "task_ids": ["mlp-0", "layernorm-0", "attention-0"],
+  "manual_corrections": {
+    "0": {"path": "configs/teacher-corrections/state-000.py", "model": "gpt-5.6-luna"},
+    "1": {"path": "configs/teacher-corrections/state-001.py", "model": "gpt-5.6-luna"},
+    "2": {"path": "configs/teacher-corrections/state-002.py", "model": "gpt-5.6-luna"},
+    "3": {"path": "configs/teacher-corrections/state-003.py", "model": "gpt-5.6-luna"},
+    "4": {"path": "configs/teacher-corrections/state-004.py", "model": "gpt-5.6-luna"},
+    "5": {"path": "configs/teacher-corrections/state-005.py", "model": "gpt-5.6-luna"},
+    "6": {"path": "configs/teacher-corrections/state-006.py", "model": "gpt-5.6-luna"},
+    "7": {"path": "configs/teacher-corrections/state-007.py", "model": "gpt-5.6-luna"},
+    "8": {"path": "configs/teacher-corrections/state-008.py", "model": "gpt-5.6-luna"},
+    "9": {"path": "configs/teacher-corrections/state-009.py", "model": "gpt-5.6-luna"},
+    "10": {"path": "configs/teacher-corrections/state-010.py", "model": "gpt-5.6-luna"},
+    "11": {"path": "configs/teacher-corrections/state-011.py", "model": "gpt-5.6-luna"},
+    "12": {"path": "configs/teacher-corrections/state-012.py", "model": "gpt-5.6-luna"}
+  }
+}

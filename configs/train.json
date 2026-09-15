@@ -1,0 +1,27 @@
+{
+  "experiment": {
+    "model": "Qwen/Qwen3-4B-Instruct-2507",
+    "context_cap": 4096,
+    "max_new_tokens": 1024,
+    "max_actions": 18,
+    "gpu_memory_gb": 16,
+    "gradient_accumulation": 8,
+    "seed": 42,
+    "task_limit": 4
+  },
+  "base_revision": "main",
+  "output_dir": "artifacts/gpu-run",
+  "task_ids": ["mlp-0", "layernorm-0", "attention-0"],
+  "starter_dir": null,
+  "condition": "action_value",
+  "group_size": 4,
+  "updates": 16,
+  "learning_rate": 0.00001,
+  "kl_coefficient": 0.01,
+  "value_coefficient": 0.25,
+  "value_checkpoints": 6,
+  "candidate_actions": 2,
+  "continuations_per_action": 4,
+  "value_epochs": 100,
+  "verifier_timeout": 60
+}

@@ -1,0 +1,15 @@
+{
+  "model": "Qwen/Qwen3-4B-Instruct-2507",
+  "quantization": "nf4",
+  "lora_rank": 8,
+  "context_cap": 4096,
+  "batch_size": 1,
+  "gradient_accumulation": 8,
+  "concurrent_rollouts": 1,
+  "max_actions": 18,
+  "max_new_tokens": 1024,
+  "temperature": 0.6,
+  "gpu_memory_gb": 10,
+  "seed": 42,
+  "verifier_version": "miniport-v3-outcomes"
+}

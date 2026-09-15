@@ -1,0 +1,133 @@
+import jax
+import jax.numpy as jnp
+
+
+class JAXModel:
+    template = None
+    dense_weights = ()
+
+    def __init__(self, config):
+        self.config = dict(config)
+
+    def topology(self):
+        return self.template
+
+    def load_parameters(self, parameters):
+        self.p = {k: jnp.array(v, dtype=jnp.float32) for k, v in parameters.items()}
+
+    def export_parameters(self):
+        return {k: v.T if k in self.dense_weights else v for k, v in self.p.items()}
+
+    def run(self, x, draws):
+        raise NotImplementedError
+
+
+class MLP(JAXModel):
+    template = "mlp"
+    dense_weights = ("w1", "w2")
+
+    def run(self, x, draws):
+        x, p = jnp.asarray(x), self.p
+        layer = jnp.maximum(x @ p["w1"] + p["b1"], 0)
+        return {"layer": layer, "output": layer @ p["w2"] + p["b2"]}
+
+
+class CNN(JAXModel):
+    template = "cnn"
+
+    def export_parameters(self):
+        return {"kernel": self.p["kernel"].transpose(3, 2, 0, 1), "bias": self.p["bias"]}
+
+    def run(self, x, draws):
+        layer = jax.lax.conv_general_dilated(
+            jnp.asarray(x), self.p["kernel"], (1, 1), "SAME",
+            dimension_numbers=("NHWC", "HWIO", "NHWC")) + self.p["bias"]
+        return {"layer": layer, "output": jnp.maximum(layer, 0).mean(axis=(1, 2))}
+
+
+class LayerNorm(JAXModel):
+    template = "layernorm"
+    dense_weights = ("weight",)
+
+    def run(self, x, draws):
+        x, p = jnp.asarray(x), self.p
+        centered = x - x.mean(axis=-1, keepdims=True)
+        layer = centered / jnp.sqrt((centered ** 2).mean(axis=-1, keepdims=True) + self.config["epsilon"])
+        layer = layer * p["scale"] + p["bias"]
+        return {"layer": layer, "output": x + layer @ p["weight"]}
+
+
+class Attention(JAXModel):
+    template = "attention"
+    dense_weights = ("qkv", "out")
+
+    def project(self, x):
+        b, n, w = x.shape
+        heads = self.config["heads"]
+        return [z.reshape(b, n, heads, w // heads).transpose(0, 2, 1, 3)
+                for z in jnp.split(x @ self.p["qkv"], 3, axis=-1)]
+
+    def attend(self, q, k, v, mask=None):
+        scores = (q @ k.swapaxes(-2, -1)) / jnp.sqrt(float(q.shape[-1]))
+        if mask is not None:
+            scores = jnp.where(mask, scores, -jnp.inf)
+        values = jax.nn.softmax(scores, axis=-1) @ v
+        b, heads, n, d = values.shape
+        return values.transpose(0, 2, 1, 3).reshape(b, n, heads * d)
+
+    def run(self, x, draws):
+        x = jnp.asarray(x)
+        q, k, v = self.project(x)
+        layer = self.attend(q, k, v, jnp.tril(jnp.ones((x.shape[1], x.shape[1]), dtype=bool)))
+        return {"layer": layer, "output": layer @ self.p["out"]}
+
+
+class RoPECache(Attention):
+    template = "rope_cache"
+
+    def rotate(self, z, positions):
+        d = z.shape[-1]
+        angles = positions[:, None] * 10000.0 ** (-jnp.arange(0, d, 2) / d)
+        even, odd = z[..., ::2], z[..., 1::2]
+        return jnp.stack((even * jnp.cos(angles) - odd * jnp.sin(angles),
+                          even * jnp.sin(angles) + odd * jnp.cos(angles)), axis=-1).reshape(z.shape)
+
+    def run(self, x, draws):
+        x = jnp.asarray(x)
+        n = x.shape[1]
+        q, k, v = self.project(x)
+        positions = jnp.arange(n) + self.config["offset"]
+        q, k = self.rotate(q, positions), self.rotate(k, positions)
+        attended = self.attend(q, k, v, jnp.tril(jnp.ones((n, n), dtype=bool)))
+        return {"layer": jnp.stack((k, v), axis=0), "output": attended @ self.p["out"]}
+
+    def run_cached(self, x, draws):
+        x = jnp.asarray(x)
+        keys, values, outputs = [], [], []
+        for i in range(x.shape[1]):
+            q, k, v = self.project(x[:, i:i + 1])
+            positions = jnp.asarray([self.config["offset"] + i])
+            q, k = self.rotate(q, positions), self.rotate(k, positions)
+            keys.append(k)
+            values.append(v)
+            attended = self.attend(q, jnp.concatenate(keys, axis=2), jnp.concatenate(values, axis=2))
+            outputs.append(attended @ self.p["out"])
+        return jnp.concatenate(outputs, axis=1)
+
+
+class Sampling(JAXModel):
+    template = "sampling"
+    dense_weights = ("weight",)
+
+    def run(self, x, draws):
+        layer = jnp.asarray(x) @ self.p["weight"] + self.p["bias"]
+        cdf = jnp.cumsum(jax.nn.softmax(layer, axis=-1), axis=-1)
+        output = jnp.minimum((jnp.asarray(draws)[..., None] > cdf).sum(axis=-1), self.config["hidden"] - 1)
+        return {"layer": layer, "output": output}
+
+
+MODELS = {model.template: model for model in (MLP, CNN, LayerNorm, Attention, RoPECache, Sampling)}
+
+
+def build(config):
+    return MODELS[config["template"]](config)
