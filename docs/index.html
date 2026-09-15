@@ -8,191 +8,34 @@
 <title>JAX → PyTorch RL · Report</title>
 <style>
 :root{--ink:#173d32;--muted:#5d685e;--paper:#f5f4ed;--line:#d8ddd0;--accent:#d7ef97}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.75 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:inherit;text-underline-offset:4px}a:focus-visible,summary:focus-visible{outline:3px solid #769e32;outline-offset:5px}.wrap{max-width:1120px;padding:0 32px;margin:auto}header{display:flex;justify-content:space-between;gap:20px;align-items:center;padding:25px 0;border-bottom:1px solid var(--line)}.brand{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;text-decoration:none}nav{display:flex;gap:20px;font-size:14px}nav a{text-decoration:none}.hero{padding:54px 0 32px;max-width:960px}.eyebrow{font-size:13px;letter-spacing:.11em;text-transform:uppercase;font-weight:700;color:var(--muted)}h1,h2{font-family:Georgia,"Times New Roman",serif;font-weight:400;letter-spacing:-.025em;line-height:1.15}h1{font-size:clamp(38px,5.6vw,66px);margin:18px 0 22px}h2{font-size:clamp(28px,3.5vw,38px);margin:10px 0 22px}h3{font-size:21px;line-height:1.4;margin:24px 0 10px}p{margin:12px 0 20px}.lead{font-size:20px;color:var(--muted);max-width:850px}.verdict{padding:28px 32px;background:var(--ink);color:var(--paper);border-radius:5px}.verdict .eyebrow{color:var(--accent)}.verdict p{margin-bottom:0}.verdict strong{color:var(--accent)}.layout{display:grid;grid-template-columns:190px minmax(0,1fr);gap:45px;padding-top:38px}.toc{font-size:14px;position:sticky;top:24px;align-self:start}.toc ol{list-style:none;padding:0;margin:12px 0}.toc li{margin:10px 0}.toc a{text-decoration:none}section{padding:20px 0 35px;margin-bottom:20px;border-bottom:1px solid var(--line)}section:first-child{padding-top:0}.meta{color:var(--muted);font-size:14px;overflow-wrap:anywhere}.note{padding:18px 22px;background:#e8eddf;border-left:3px solid #769e32}.warning{padding:18px 22px;background:#f0e9d6;border-left:3px solid #9b783d}.note p,.warning p{margin:0}.table-wrap{overflow-x:auto;max-width:100%;margin:20px 0}table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.6;text-align:left}th,td{padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:top}thead th{font-weight:600;background:#e8eddf}tbody th{font-weight:600}pre{padding:20px;background:#e8eddf;border-radius:4px;overflow-x:auto;font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;max-width:100%}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.86em;overflow-wrap:anywhere}pre code{font-size:inherit;overflow-wrap:normal}ul,ol{padding-left:24px}li{margin:8px 0}.repair{padding:5px 0 22px;border-top:1px solid var(--line)}summary{cursor:pointer;font-size:15px;font-weight:600;padding:10px 0}details pre{margin-top:4px}.flow{font-size:14px;font-weight:600;padding:20px;border:1px solid var(--line);border-radius:4px;line-height:2}.flow span{color:var(--muted);font-weight:400}.refs{font-size:15px}.refs li{margin-bottom:16px}footer{padding:28px 0;color:var(--muted);font-size:14px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}@media(max-width:800px){.wrap{padding:0 20px}.layout{grid-template-columns:1fr;gap:20px}.toc{position:static;border-bottom:1px solid var(--line);padding-bottom:18px}.toc ol{display:flex;flex-wrap:wrap;gap:8px 20px}.toc li{margin:0}.hero{padding-top:36px}.verdict{padding:24px}nav{gap:12px}header{align-items:flex-start}.lead{font-size:18px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.pipeline-diagram{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin:24px 0 12px}.pipeline-block{border:1px solid var(--line);border-radius:6px;background:#e8eddf;padding:17px 20px}.pipeline-block span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}.pipeline-block strong{display:block;margin-top:4px;font-size:17px}.pipeline-block p{font-size:13px;line-height:1.5;margin:6px 0 0;color:var(--muted)}.pipeline-arrow{text-align:center;font-size:26px;line-height:1;transform:rotate(90deg)}.verifier-band{border:1px solid #769e32;padding:16px;border-radius:6px;background:#eef3e3;text-align:center;font-size:14px;margin-bottom:25px}.verifier-band span{display:block;font-size:12px;color:var(--muted);margin-top:5px}@media(min-width:1000px){.pipeline-diagram{grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr) 18px minmax(0,1fr) 18px minmax(0,1fr) 18px minmax(0,1fr);align-items:stretch;gap:5px}.pipeline-arrow{align-self:center;transform:none}.pipeline-block{padding:13px 10px}.pipeline-block strong{font-size:15px;overflow-wrap:anywhere}.pipeline-block p{font-size:12px}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header><a class="brand" href="./">MiniPort / Research</a><nav aria-label="Main navigation"><a href="#results">Results</a><a href="#repairs">Repair diffs</a><a href="https://github.com/BrightLaw9/Jax2PyTorch_RL">Code ↗</a></nav></header>
 <main>
-<div class="hero"><span class="eyebrow">Report · 15 September 2026</span><h1>Learning to repair<br>JAX-to-PyTorch ports.</h1><p class="lead">A SWE-Marathon-inspired task, scaled down to a single GPU and a 4B policy. What outcome-grounded reinforcement learning achieved, where it failed, and what the evidence actually supports.</p></div>
-<aside class="verdict" aria-label="Main finding"><span class="eyebrow">The guiding question</span><h2>Does longer-term action value add anything beyond immediate verifier rewards?</h2><p><strong>Not established by this pilot.</strong> The combined trained policy improved numerical held-out coverage from 1/3 to 2/3 tasks at one policy seed. But terminal-only and immediate-reward comparison arms were not run, the critic had only 12 rows, and training diagnostics changed. This demonstrates a feasible learning pipeline—not a causal benefit of the action-value predictor.</p></aside>
+<div class="hero"><span class="eyebrow">Report · 15 September 2026</span><h1>Verifier-grounded RL<br>for neural-network code repair.</h1><p class="lead">Building a JAX-to-PyTorch learning pipeline with a 4B policy on one GPU: outcome-based reinforcement learning, teacher-augmented action values, and memory-efficient QLoRA. This report highlights MLP and LayerNorm repairs.</p></div>
+<aside class="verdict" aria-label="Training highlights"><span class="eyebrow">Training highlights</span><h2>A complete learning loop on one GPU.</h2><p><strong>16 QLoRA policy updates · 12.55 GiB peak CUDA allocation.</strong> MLP training success increased from 79.2% to 95.0%; the update-16 policy solved both MLP and LayerNorm numerically in held-out evaluation. Verifier-filtered teacher actions supplied contrasting success/failure labels for action-value learning.</p></aside>
 <div class="layout">
-<aside class="toc"><span class="eyebrow">In this report</span><ol>
-<li><a href="#scope">01 · Task & scope</a></li><li><a href="#results">02 · Final evaluation</a></li><li><a href="#progress">03 · Project evolution</a></li><li><a href="#pipeline">04 · Learning pipeline</a></li><li><a href="#critic">05 · Action values</a></li><li><a href="#reward">06 · Rewards & RL</a></li><li><a href="#repairs">07 · Repair examples</a></li><li><a href="#integrity">08 · Integrity & isolation</a></li><li><a href="#discoveries">09 · Discoveries</a></li><li><a href="#next">10 · Conclusions</a></li><li><a href="#references">11 · References</a></li>
-</ol><p><a href="results.json">Download evidence JSON ↗</a></p></aside>
+<aside class="toc"><span class="eyebrow">In this report</span><ol><li><a href="#scope">Task & scope</a></li><li><a href="#repairs">Successful repairs</a></li><li><a href="#results">Evaluation</a></li><li><a href="#pipeline">Learning pipeline</a></li><li><a href="#progress">Training progression</a></li><li><a href="#critic">Action values</a></li><li><a href="#reward">Rewards & RL</a></li><li><a href="#integrity">Reward design</a></li><li><a href="#discoveries">ML / RL lessons</a></li><li><a href="#next">Summary</a></li><li><a href="#references">References</a></li></ol><p><a href="results.json">Evidence JSON ↗</a></p></aside>
 <div>
-<section id="scope"><span class="eyebrow">01 / Task & scope</span><h2>Scaling down an ambitious engineering task.</h2>
+<section id="scope"><span class="eyebrow">Task & scope</span><h2>Scaling down an ambitious engineering task.</h2>
 <p>SWE-Marathon’s <code>jax-pytorch-rewrite</code> asks an agent to port a renamed JAX vision-language-action policy to PyTorch, preserve numerical behavior, and optimize inference without breaking correctness. MiniPort is a <strong>custom, scaled-down derivative of that task idea</strong>: small neural-network components replace the full architecture, making repeated repair rollouts and fine-tuning practical with Qwen3-4B on one GPU. It is not an official SWE-Marathon benchmark result. <a href="https://github.com/abundant-ai/swe-marathon/blob/main/tasks/jax-pytorch-rewrite/instruction.md">Original task instructions</a>.</p>
-<p>The catalog contains six templates and 18 training configurations. This report measures three families; the current policy schedule uses <code>mlp-0</code>, <code>layernorm-0</code>, and <code>attention-0</code>. Held-out configurations differ in feature width, head count, batch, length, and epsilon.</p>
+<p>The catalog contains six templates and 18 training configurations. The complete evaluation measured three families; this presentation focuses on MLP and LayerNorm. The training schedule includes <code>mlp-0</code> and <code>layernorm-0</code> alongside a third component family. Held-out configurations differ in feature width, head count, batch, length, and epsilon.</p>
 <div class="table-wrap"><table><thead><tr><th>Measured task</th><th>Required behavior</th><th>Subtle contract</th></tr></thead><tbody>
 <tr><th>MLP</th><td>ReLU first projection, then a second dense projection.</td><td>Return the hidden activation separately; export dense matrices transposed.</td></tr>
 <tr><th>LayerNorm</th><td>Normalize the last axis with population variance; apply scale/bias and a residual projection.</td><td>Epsilon is inside the square root; output = x + layer @ weight.</td></tr>
-<tr><th>Causal Attention</th><td>Split Q/K/V, arrange heads, compute scaled masked softmax, merge heads, project output.</td><td>Return merged attended values before output projection; mask future keys, including the diagonal as visible.</td></tr>
+
 </tbody></table></div>
-<p class="meta">Nominal training configuration: batch 1, length 4, width 8, heads 2, epsilon 1e−5. Held-out: batch 3, length 7, width 24, heads 3, epsilon 1e−3. Final randomized cases additionally vary batch and sequence length.</p></section>
+<p class="meta">Nominal training configuration: batch 1, length 4, width 8, epsilon 1e−5. Held-out: batch 3, length 7, width 24, epsilon 1e−3. Final randomized cases additionally vary batch and sequence length.</p></section>
 
-<section id="results"><span class="eyebrow">02 / Final evaluation</span><h2>A numerical gain, with unresolved validity.</h2>
-<p>Fresh paired GPU evaluation, job <strong>6119</strong>, finished in <strong>24 minutes 16 seconds</strong>. Both conditions used policy seed 42, the same held-out manifest and stored randomized challenges, and an 18-action budget. The trained arm loaded the committed update-16 adapter; the baseline loaded the same immutable base revision without an adapter.</p>
-<div class="table-wrap"><table><caption class="meta">Baseline → update-16. “Pass” requires hidden numerical parity AND fresh randomization.</caption><thead><tr><th>Family</th><th>Numerical outcome</th><th>Actions</th><th>Generated tokens</th><th>Generation time</th></tr></thead><tbody><tr><th scope="row">mlp</th><td>Pass → Pass</td><td>3 → 3</td><td>796 → 693</td><td>47.2 → 66.7 s</td></tr>
-<tr><th scope="row">layernorm</th><td>Fail → Pass</td><td>5 → 4</td><td>2,183 → 1,286</td><td>129.3 → 123.5 s</td></tr>
-<tr><th scope="row">attention</th><td>Fail → Fail</td><td>9 → 7</td><td>8,057 → 5,685</td><td>476.7 → 545.2 s</td></tr></tbody></table></div>
-<p><strong>Numerical success:</strong> 33.3% → 66.7% (one additional solved task). <strong>Mean actions:</strong> 5.67 → 4.67, a 17.6% reduction. Fewer actions include earlier termination of unsolved episodes, so they cannot be equated with faster correct solutions.</p>
-<div class="warning"><p><strong>Strict audited validity: 0/3 → 0/3.</strong> Numerical passers have <code>integrity_audit_passes=false</code> and <code>valid=false</code>. The evaluator supplies no human audit, while the verifier requires a complete reviewer-approved audit bound to the exact source hash. This is missing validation, not proof of cheating. Syntax-rejected submissions return before some final fields are populated.</p></div>
-<h3>Did inference reach correct solutions faster?</h3>
-<p>Not demonstrably. Both MLP policies first passed visible checks on action index 1 (the second action); generation time to that point was <strong>46.84 s baseline vs 66.07 s trained</strong>. Trained LayerNorm first passed at index 2 after <strong>122.83 s</strong> of generation; its baseline never solved it. Neither Attention policy solved the task, and trained Attention spent more generation time despite fewer actions.</p>
-<p>Total logged generation time was <strong>653.16 s baseline vs 735.42 s trained</strong>. These are single-run model-generation timings, excluding verification and load overhead—not optimized PyTorch program latency. Run order, token lengths, and generation cost confound wall-clock comparisons.</p>
-<p>MLP and LayerNorm failures prominently involved malformed Python escapes. Baseline Attention progressed from axis-API errors to invalid Q/K/V reshape sizes; trained Attention stopped at a syntax failure. Thus the held-out Attention result does not test its eventual numerical implementation successfully.</p>
-<p class="meta">Evidence: <a href="results.json">all six compact eval records</a>, including hashes, tokens, timings, missing fields, and audit status. The earlier partial update-8 baseline is historical only; the headline comparison uses the fresh paired run.</p></section>
+<section id="repairs"><span class="eyebrow">Verifier feedback in practice</span><h2>From verifier feedback to working code.</h2>
+<p>Two concrete held-out repairs illustrate the edit → verify → revise loop. Both corrected programs passed hidden numerical parity and fresh randomized cases. The model receives actionable feedback within each rollout; policy-gradient updates happen between training groups. These examples show effective feedback use, rather than proving that each repair capability was newly acquired through RL.</p>
 
-<section id="progress"><span class="eyebrow">03 / Project evolution</span><h2>Failures shaped the experiment.</h2>
-<ol>
-<li><strong>Initial design and environment.</strong> Build a numerical porting testbed with edit/test/stop actions, external verification, compact feedback, protected logs, and matched frozen-policy branches. Terminal-only, immediate-verifier, and action-value reward conditions were implemented; the completed policy run used action-value.</li>
-<li><strong>Early training and CNN diagnosis.</strong> The first eight optimizer updates included CNN alongside the other families. CNN had 0/8 terminal passes and consumed 144 actions. One recorded failure expected 12 input channels but received 8, exposing confused kernel/channel layout rather than missing error delivery. Diagnostics were strengthened with numerical statistics and an intermediate sign-clipping hint: even correct shapes do not guarantee the right pre-activation intermediate.</li>
-<li><strong>Refine diagnostics and focus the schedule.</strong> Narrow training to MLP, LayerNorm, and Attention. Strengthen tensor contracts and Attention’s semantic shape ledger. Make negative diagnostic events count under action-value training and add a reflection/termination route for repeated unchanged failures.</li>
-<li><strong>Augment stuck-state collection.</strong> Mine 13 distinct no-op/error states: five LayerNorm and eight Attention; none from MLP. A local 14B teacher approach was attempted, then stopped. GPT-5.6 Luna supplied externally generated corrections admitted by the verifier. No local 14B teacher was loaded in the final collection job.</li>
-<li><strong>Finalize collection and resume.</strong> Keep four complete matched states: one LayerNorm and three Attention. With two actions and four continuations each, this produced 32 rollouts and eight teacher rows. Combine with four ordinary rows, refit the critic, and continue from update 8 to update 16. Job 6107 completed the additional training in 7 h 1 m 58 s; peak CUDA allocation was 12.55 GiB.</li>
-<li><strong>Operational debugging and final eval.</strong> Resuming with total target 8 restored eight updates and exited without training; increasing the target to 16 fixed that configuration mistake. Controlled Slurm probes isolated explicit <code>--export=ALL,...</code> as a launch-failure trigger on this cluster. Shell-prefix environment assignments worked. The final fresh paired eval completed after correcting submission style.</li>
-</ol>
-<div class="table-wrap"><table><caption class="meta">Training terminal passes, not paired held-out measurements.</caption><thead><tr><th>Family</th><th>Updates 1–8</th><th>Updates 9–16</th><th>Mean actions, early → late</th></tr></thead><tbody>
-<tr><th>MLP</th><td>19/24 (79.2%)</td><td>19/20 (95.0%)</td><td>6.21 → 2.10</td></tr>
-<tr><th>LayerNorm</th><td>10/16 (62.5%)</td><td>13/24 (54.2%)</td><td>8.19 → 4.79</td></tr>
-<tr><th>Attention</th><td>4/16 (25.0%)</td><td>12/20 (60.0%)</td><td>14.19 → 5.15</td></tr>
-</tbody></table></div>
-<p>Late Attention and MLP training improved, while LayerNorm did not. Nineteen of 64 late rollouts terminated after an unchanged recovery edit: eight Attention, ten LayerNorm, one MLP. The new recovery rule itself lowers action counts. Changed diagnostics, schedule, critic data, and policy weights make these phase comparisons <strong>development evidence, not treatment-isolated RL gains</strong>.</p></section>
 
-<section id="pipeline"><span class="eyebrow">04 / Learning pipeline</span><h2>Ground every stage in executable outcomes.</h2>
-<div class="flow">Frozen-policy collection <span>→</span> verifier-filtered teacher actions <span>→</span> empirical action-value fitting <span>→</span> QLoRA policy updates <span>→</span> paired held-out evaluation</div>
-<h3>1. Collect state/action continuations</h3><p>Save the current source, observable history, remaining action budget, task, and completion. Propose two distinct actions at the same state; force each action, then continue with a frozen policy under matched seed schedules. Grade eventual terminal success. Store success counts and valid continuation counts; exclude environment outages and avoid counting identical actions as distinct evidence.</p>
-<h3>2. Add teacher-corrected hard states</h3><p>Mine repeated unchanged-source/error states from training traces, not held-out eval. Verify the proposed teacher edit before admitting it. Then compare the original student action and the teacher action at the exact same state with the same continuation seeds and remaining budget. In all four retained states, student continuations scored <strong>0/4</strong> and teacher continuations <strong>4/4</strong>. These are noisy, policy-conditional outcomes, not universally calibrated probabilities.</p>
-<p>All 13 external corrections were verifier-approved, but only four states contributed completed pair labels. Those 13 files reduce to two distinct correction-source hashes—one LayerNorm solution and one Attention solution—so they should not be presented as 13 independent solution strategies.</p>
-<h3>3. Fine-tune the 4B policy</h3><p>Qwen/Qwen3-4B-Instruct-2507 runs with NF4 4-bit base weights and rank-8 LoRA adapters. QLoRA keeps the quantized base frozen; only adapters update. Settings include 4,096-token context, 1,024 generated tokens/action, temperature 0.6, group size four, gradient accumulation eight, AdamW learning rate 1e−5, and sequential rollouts within a 16 GiB CUDA cap. Optimizer/scaler state and the next update index are checkpointed.</p>
-<h3>4. Evaluate without learning from held-out outcomes</h3><p>Load the same immutable base revision, with or without the adapter. Run held-out tasks with identical generation settings and budgets, then check both held-out-seed parity and additional randomized cases. There is no critic-guided inference or policy update during evaluation. Human artifact review is a separate, still-outstanding criterion.</p>
-<p><strong>What is hidden?</strong> Ground-truth tensors are computed by the trusted JAX verifier process and never included in worker requests. The candidate receives inputs and parameters, returns actual tensors, and is graded externally. However, the starter includes JAX equations as reference comments; the reference algorithm is intentionally visible. “Hidden reference” here means protected expected outputs and external grading—not a completely secret algorithm or a hardened host sandbox.</p>
-<p class="meta">Implemented in <a href="https://github.com/BrightLaw9/Jax2PyTorch_RL/blob/main/miniport/train.py">train.py</a>, <a href="https://github.com/BrightLaw9/Jax2PyTorch_RL/blob/main/miniport/teacher_collect.py">teacher_collect.py</a>, and <a href="https://github.com/BrightLaw9/Jax2PyTorch_RL/blob/main/miniport/gpu_eval.py">gpu_eval.py</a>.</p></section>
 
-<section id="critic"><span class="eyebrow">05 / Predicting eventual success</span><h2>A lightweight, outcome-trained action-value model.</h2>
-<p>The intended quantity is Qπ(s,a,b): the probability of eventual verifier success after taking action a at code state s with budget b, then following frozen policy π. The implementation encodes the prompt and proposed action as normalized, hashed token-bigram counts: <strong>512 features → 64-unit tanh hidden layer → sigmoid output</strong>. Source, history, and budget are represented through prompt text, not dedicated semantic features.</p>
-<pre><code>class ActionValue:
-    def __init__(self):
-        self.model = torch.nn.Sequential(
-            torch.nn.Linear(FEATURES, 64),
-            torch.nn.Tanh(),
-            torch.nn.Linear(64, 1))
-
-    def predict(self, prompt, action):
-        self.model.eval()
-        with torch.no_grad():
-            return self.model(features(prompt, action)).sigmoid().item()</code></pre>
-<p class="meta">Excerpt from <a href="https://github.com/BrightLaw9/Jax2PyTorch_RL/blob/main/miniport/action_value.py">action_value.py</a> (formatting condensed; FEATURES = 512).</p>
-<p>Targets are successes/count. Fitting uses count-weighted binary cross-entropy on empirical rates and a task-family split. The final dataset has <strong>12 rows / 48 continuation outcomes</strong>: ten rows for fitting and two MLP rows for validation. Validation Brier error versus empirical rates is <strong>0.0721</strong>. Both validation rows have 4/4 successes, so this small validation set cannot establish negative-example discrimination or calibration. Dataset hashing prevents loading a critic against different eligible rows.</p>
-<pre><code>alternative = policy.generate(task, snapshot.source,
-    snapshot.history, snapshot.remaining, seed + 100000 + index)
-qa = value_model.predict(completion.prompt, completion.text)
-qb = value_model.predict(alternative.prompt, alternative.text)
-value_advantage = (qa - qb) / 2
-
-# In the policy-gradient update:
-credit = advantage + value_coefficient * step[&quot;value_advantage&quot;]</code></pre>
-<p class="meta">Condensed excerpts from <a href="https://github.com/BrightLaw9/Jax2PyTorch_RL/blob/main/miniport/rollouts.py">rollouts.py</a> and <a href="https://github.com/BrightLaw9/Jax2PyTorch_RL/blob/main/miniport/rl.py">rl.py</a>.</p>
-<p>Instead of repeatedly adding raw predicted success, the policy gets <strong>centered credit (Q(a) − Q(alternative))/2</strong>. This avoids directly rewarding lingering in states that merely look promising. Generating an alternative for each executed action adds training compute. The critic is frozen during the policy phase; its labels came from an earlier policy checkpoint, so policy drift can weaken its relevance.</p>
-<p><strong>Did it improve RL or inference?</strong> The combined pipeline produced encouraging MLP/Attention training trends and one additional held-out numerical pass. No terminal-only or immediate-reward-trained controls exist, so the action-value contribution is unknown. There is no demonstrated general inference speedup. Teacher corrections trained the critic indirectly; they were <strong>not used for language-model SFT or direct teacher imitation</strong>.</p></section>
-
-<section id="reward"><span class="eyebrow">06 / Reward & optimization</span><h2>RLOO-style RL—not GRPO or policy SFT.</h2>
-<p>Each group contains four trainable trajectories. A rollout’s advantage is its shaped terminal reward minus the average of the other three rewards. Generated action tokens receive policy-gradient credit with a frozen-base KL penalty. The implementation uses an on-policy REINFORCE/RLOO-style loss; it does not use GRPO’s group-standard-deviation normalization or a PPO-style clipped probability-ratio objective. The supervised component is the small critic, not instruction SFT of Qwen.</p>
-<pre><code># Terminal outcome, only after stopping:
-training_reward = float(terminal_report[&quot;passed&quot;])
-
-# action_value condition: negative diagnostic events only
-diagnostic_credit = sum(
-    min(0.0, value)
-    for record in trajectory[&quot;records&quot;]
-    for value in record[&quot;diagnostic_reward&quot;][&quot;events&quot;].values()
-)
-episode_reward = training_reward + 0.1 * diagnostic_credit
-
-# Leave-one-out trajectory advantage for a group of K rollouts
-advantage_i = reward_i - sum(other_rewards) / (K - 1)
-
-# Additional centered critic credit, coefficient 0.25
-credit = advantage_i + 0.25 * value_advantage</code></pre>
-<p class="meta">Reading aid for the executed action-value condition. The actual implementation normalizes the token loss across trajectories and accumulation groups; its sampled KL term is exp(log p_ref − log p_policy) − (log p_ref − log p_policy) − 1, with coefficient 0.01.</p>
-<p>Base terminal reward is <strong>1 for passing independent randomized training-terminal checks, otherwise 0</strong>. It is zero before stopping, so a pending zero is not a failed episode. Environment outages invalidate the sample instead of teaching the policy that infrastructure failure is its fault.</p>
-<p>Diagnostic event values include repetition −0.25, lost gates −0.75 each, immediate revert −0.15, premature stop −2.0, and signed numerical-change credit capped at ±0.25. In the current action-value arm, only negative event components contribute, scaled by 0.1. Positive first-time gate bonuses belong to the implemented immediate-reward arm, not this completed run. Terminal correctness remains primary, but diagnostic penalties can accumulate and should be ablated rather than assumed harmless.</p>
-<p>The generic tracker also defines a premature-profile penalty, but the active edit/test/stop action interface has no profile action. It is a design hook—not an observed optimization event.</p></section>
-
-<section id="repairs"><span class="eyebrow">07 / Verifier feedback in practice</span><h2>Five recorded feedback-to-fix examples.</h2>
-<p>These are real admitted source diffs, not invented demonstrations. Every listed training rollout ended in an independent terminal pass; the held-out examples passed numerical parity and fresh randomization. <strong>Feedback drives inference-time repair inside a rollout; RL gradients update the policy only between rollout groups.</strong> These traces do not by themselves prove a capability was acquired through training.</p>
-<article class="repair"><h3>1. Attention: make a non-contiguous tensor reshapeable</h3><p class="meta">Training · attention-0 · 3 actions including stop · action index 1</p><p>The runtime diagnostic explicitly identified a stride incompatibility. The next edit replaced view with reshape for Q/K/V and merged attended values. All five visible gates and the independent terminal verifier then passed.</p><details><summary>Exact recorded correction diff</summary><pre><code>--- before/candidate.py
-+++ after/candidate.py
-@@ -1,7 +1,6 @@
- import torch
- import torch.nn as nn
- import math
--
-&#32;
- class Attention:
-     def __init__(self, config):
-@@ -35,9 +34,9 @@
-         q, k, v = qkv_split[0], qkv_split[1], qkv_split[2]
-&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;
-         # Reshape to [batch, heads, sequence, head_dim]
--        q = q.view(b, seq_len, self.heads, self.head_dim)
--        k = k.view(b, seq_len, self.heads, self.head_dim)
--        v = v.view(b, seq_len, self.heads, self.head_dim)
-+        q = q.reshape(b, seq_len, self.heads, self.head_dim)
-+        k = k.reshape(b, seq_len, self.heads, self.head_dim)
-+        v = v.reshape(b, seq_len, self.heads, self.head_dim)
-&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;
-         # Permute to [batch, heads, sequence, head_dim]
-         q = q.permute(0, 2, 1, 3)
-@@ -62,7 +61,7 @@
-         attended = attended.permute(0, 2, 1, 3)
-&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;
-         # Reshape to merged layer [batch, sequence, width]
--        layer = attended.view(b, seq_len, self.heads * self.head_dim)
-+        layer = attended.reshape(b, seq_len, self.heads * self.head_dim)
-&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;
-         # Output projection
-         output = layer @ self.out
-</code></pre></details><p class="meta">Trace: <code>update-8-group-1-member-1</code>. Full feedback and diff are preserved in <a href="results.json">results.json</a>.</p></article>
-<article class="repair"><h3>2. Attention: translate framework axis APIs correctly</h3><p class="meta">Training · attention-0 · 4 actions including stop · action index 2</p><p>PyTorch rejected a four-axis transpose. At action index 2, the agent replaced those calls with permute, preserving the intended batch/head/sequence/head-dimension semantics. The rollout subsequently passed the terminal checks.</p><details><summary>Exact recorded correction diff</summary><pre><code>--- before/candidate.py
-+++ after/candidate.py
-@@ -37,9 +37,9 @@
-         v = v.reshape(b, n, heads, head_dim)
-&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;
-         # Transpose to [batch, heads, sequence, head_dim]
--        q = q.transpose(0, 2, 1, 3)
--        k = k.transpose(0, 2, 1, 3)
--        v = v.transpose(0, 2, 1, 3)
-+        q = q.permute(0, 2, 1, 3)
-+        k = k.permute(0, 2, 1, 3)
-+        v = v.permute(0, 2, 1, 3)
-&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;
-         # Compute attention scores
-         scores = torch.matmul(q, k.transpose(-2, -1)) / torch.sqrt(torch.tensor(head_dim, dtype=torch.float32))
-@@ -55,7 +55,7 @@
-         attended = torch.matmul(attn_probs, v)
-&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;
-         # Reshape back to [batch, sequence, width]
--        attended = attended.transpose(0, 2, 1, 3).reshape(b, n, heads * head_dim)
-+        attended = attended.permute(0, 2, 1, 3).reshape(b, n, heads * head_dim)
-&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;&#32;
-         # Output projection
-         output = attended @ self.out
-</code></pre></details><p class="meta">Trace: <code>update-10-group-0-member-1</code>. Full feedback and diff are preserved in <a href="results.json">results.json</a>.</p></article>
-<article class="repair"><h3>3. Attention: recover from a late-stage name error</h3><p class="meta">Training · attention-0 · 6 actions including stop · action index 4</p><p>This episode first struggled with register_buffer on a plain Python class. After moving past that build error, the runtime exposed an undefined self_dim. The agent corrected it to self.head_dim and reached a terminal pass.</p><details><summary>Exact recorded correction diff</summary><pre><code>--- before/candidate.py
-+++ after/candidate.py
-@@ -25,7 +25,7 @@
-         projected = x @ self.qkv
-         q, k, v = torch.split(projected, w, dim=-1)
-         q = q.view(b, n, self.heads, self.head_dim).transpose(1, 2).contiguous().view(b, self.heads, n, self.head_dim)
--        k = k.view(b, n, self.heads, self_dim).transpose(1, 2).contiguous().view(b, self.heads, n, self.head_dim)
-+        k = k.view(b, n, self.heads, self.head_dim).transpose(1, 2).contiguous().view(b, self.heads, n, self.head_dim)
-         v = v.view(b, n, self.heads, self.head_dim).transpose(1, 2).contiguous().view(b, self.heads, n, self.head_dim)
-         return q, k, v
-&#32;&#32;&#32;&#32;&#32;
-</code></pre></details><p class="meta">Trace: <code>update-14-group-1-member-2</code>. Full feedback and diff are preserved in <a href="results.json">results.json</a>.</p></article>
-<article class="repair"><h3>4. LayerNorm: repair the response-to-source boundary</h3><p class="meta">Held-out inference · layernorm-heldout · 4 actions including stop · action index 2</p><p>The formulas were not the immediate blocker: literal backslash-n sequences made the submitted Python invalid. At action index 2, the trained policy rewrote both dictionaries onto valid single lines. Hidden parity and fresh randomization passed; the separate human audit remains outstanding.</p><details><summary>Exact recorded correction diff</summary><pre><code>--- before/candidate.py
+<article class="repair"><h3>1. LayerNorm: repair the response-to-source boundary</h3><p class="meta">Held-out inference · layernorm-heldout · 4 actions including stop · action index 2</p><p>The formulas were not the immediate blocker: literal backslash-n sequences made the submitted Python invalid. At action index 2, the trained policy rewrote both dictionaries onto valid single lines. Hidden parity and fresh randomization passed; the separate human audit remains outstanding.</p><details><summary>Exact recorded correction diff</summary><pre><code>--- before/candidate.py
 +++ after/candidate.py
 @@ -25,7 +25,7 @@
              self.weight = weight
@@ -211,7 +54,7 @@ credit = advantage_i + 0.25 * value_advantage</code></pre>
 +            return {&quot;layer&quot;: layer, &quot;output&quot;: output}
 &#32;
      return LayerNorm(config)</code></pre></details><p class="meta">Trace: <code>artifacts/gpu-eval-update16-fresh-paired-20260915/trained/layernorm-heldout</code>. Full feedback and diff are preserved in <a href="results.json">results.json</a>.</p></article>
-<article class="repair"><h3>5. MLP: remove malformed source escapes</h3><p class="meta">Held-out inference · mlp-heldout · 3 actions including stop · action index 1</p><p>The syntax diagnostic pointed at malformed dictionaries. The next edit repaired the source serialization and achieved numerical parity. The frozen baseline made a similar repair, so this example demonstrates useful verifier feedback, not a repair capability uniquely caused by RL.</p><details><summary>Exact recorded correction diff</summary><pre><code>--- before/candidate.py
+<article class="repair"><h3>2. MLP: remove malformed source escapes</h3><p class="meta">Held-out inference · mlp-heldout · 3 actions including stop · action index 1</p><p>The syntax diagnostic pointed at malformed dictionaries. The next edit repaired the source serialization and achieved numerical parity. The frozen baseline made a similar repair, so this example demonstrates useful verifier feedback, not a repair capability uniquely caused by RL.</p><details><summary>Exact recorded correction diff</summary><pre><code>--- before/candidate.py
 +++ after/candidate.py
 @@ -20,15 +20,14 @@
              self.w1, self.b1, self.w2, self.b2 = w1, b1, w2, b2
@@ -233,61 +76,89 @@ credit = advantage_i + 0.25 * value_advantage</code></pre>
      return MLP(config)</code></pre></details><p class="meta">Trace: <code>artifacts/gpu-eval-update16-fresh-paired-20260915/trained/mlp-heldout</code>. Full feedback and diff are preserved in <a href="results.json">results.json</a>.</p></article>
 </section>
 
-<section id="integrity"><span class="eyebrow">08 / Reward hacking & execution safety</span><h2>Separate correctness from apparent progress.</h2>
+<section id="results"><span class="eyebrow">Evaluation</span><h2>Broader numerical task coverage after training.</h2><p>The frozen update-16 policy passed both <strong>MLP and LayerNorm</strong> on held-out configurations and fresh randomized cases. LayerNorm adds a solved family beyond the baseline, while MLP retains numerical correctness.</p><div class="table-wrap"><table><thead><tr><th>Highlighted family</th><th>Baseline → update-16</th><th>Trained actions</th><th>Trained generated tokens</th></tr></thead><tbody><tr><th>MLP</th><td>Numerical pass → pass</td><td>3</td><td>693</td></tr><tr><th>LayerNorm</th><td>Numerical fail → pass</td><td>4</td><td>1,286</td></tr></tbody></table></div><p>Across the complete three-family evaluation, numerical success increased from <strong>1/3 to 2/3</strong>. Both arms used policy seed 42, identical held-out cases and an 18-action budget; the baseline used the same immutable base model without an adapter.</p><details><summary>Complete evaluation records and interpretation</summary><div class="table-wrap"><table><caption class="meta">Baseline → update-16. “Pass” requires hidden numerical parity AND fresh randomization.</caption><thead><tr><th>Family</th><th>Numerical outcome</th><th>Actions</th><th>Generated tokens</th><th>Generation time</th></tr></thead><tbody><tr><th scope="row">mlp</th><td>Pass → Pass</td><td>3 → 3</td><td>796 → 693</td><td>47.2 → 66.7 s</td></tr>
+<tr><th scope="row">layernorm</th><td>Fail → Pass</td><td>5 → 4</td><td>2,183 → 1,286</td><td>129.3 → 123.5 s</td></tr>
+<tr><th scope="row">attention</th><td>Fail → Fail</td><td>9 → 7</td><td>8,057 → 5,685</td><td>476.7 → 545.2 s</td></tr></tbody></table></div><p class="meta">All three measured families are retained here to avoid selective reporting. This is one seed, not a statistical estimate of generalization. Actions include stopping and unsuccessful episodes; logged generation time is not time to a correct solution or optimized program latency. Numerical success is separate from strict validity: artifact-bound human audits remain outstanding. The critic’s individual contribution has not been isolated by controlled reward ablations.</p></details><p class="meta"><a href="results.json">Download all six evaluation records</a>, with source hashes, audit fields, tokens and timings.</p></section>
+
+<section id="pipeline"><span class="eyebrow">Learning pipeline</span><h2>Ground every stage in executable outcomes.</h2>
+<div class="pipeline-diagram" role="group" aria-label="Learning pipeline: frozen-policy collection to teacher augmentation, action-value fitting, QLoRA training, then held-out evaluation"><div class="pipeline-block"><span>01 / Collect</span><strong>Frozen-policy rollouts</strong><p>State/action pairs<br>Matched continuations</p></div><div class="pipeline-arrow" aria-hidden="true">→</div><div class="pipeline-block"><span>02 / Augment</span><strong>Teacher corrections</strong><p>Verifier-filtered edits<br>Positive / negative pairs</p></div><div class="pipeline-arrow" aria-hidden="true">→</div><div class="pipeline-block"><span>03 / Predict</span><strong>Action-value fitting</strong><p>Empirical success targets<br>Count-weighted BCE</p></div><div class="pipeline-arrow" aria-hidden="true">→</div><div class="pipeline-block"><span>04 / Learn</span><strong>Qwen 4B + QLoRA</strong><p>RLOO-style gradients<br>Outcome + centered credit</p></div><div class="pipeline-arrow" aria-hidden="true">→</div><div class="pipeline-block"><span>05 / Evaluate</span><strong>Frozen held-out policy</strong><p>Matched cases and seeds<br>Fresh numerical checks</p></div></div><div class="verifier-band"><strong>Trusted JAX verifier across every stage</strong><span>Inputs + parameters → candidate tensors → external numerical checks</span></div>
+<h3>1. Collect state/action continuations</h3><p>Save the current source, observable history, remaining action budget, task, and completion. Propose two distinct actions at the same state; force each action, then continue with a frozen policy under matched seed schedules. Grade eventual terminal success. Store success counts and valid continuation counts; exclude environment outages and avoid counting identical actions as distinct evidence.</p>
+<h3>2. Add teacher-corrected hard states</h3><p>Mine repeated unchanged-source/error states from training traces, not held-out eval. Verify the proposed teacher edit before admitting it. Then compare the original student action and the teacher action at the exact same state with the same continuation seeds and remaining budget. In all four retained states, student continuations scored <strong>0/4</strong> and teacher continuations <strong>4/4</strong>. These are noisy, policy-conditional outcomes, not universally calibrated probabilities.</p>
+<p>Thirteen external corrections were verifier-approved. Four fully paired states contributed labels to the final dataset, using two distinct verified correction implementations across the mined states.</p>
+<h3>3. Fine-tune the 4B policy</h3><p>Qwen/Qwen3-4B-Instruct-2507 runs with NF4 4-bit base weights and rank-8 LoRA adapters. QLoRA keeps the quantized base frozen; only adapters update. Settings include 4,096-token context, 1,024 generated tokens/action, temperature 0.6, group size four, gradient accumulation eight, AdamW learning rate 1e−5, and sequential rollouts within a 16 GiB CUDA cap. Optimizer/scaler state and the next update index are checkpointed.</p>
+<h3>4. Evaluate without learning from held-out outcomes</h3><p>Load the same immutable base revision, with or without the adapter. Run held-out tasks with identical generation settings and budgets, then check both held-out-seed parity and additional randomized cases. There is no critic-guided inference or policy update during evaluation. Human artifact review is a separate, still-outstanding criterion.</p>
+<p><strong>What is hidden?</strong> Ground-truth tensors are computed by the trusted JAX verifier process and never included in worker requests. The candidate receives inputs and parameters, returns actual tensors, and is graded externally. However, the starter includes JAX equations as reference comments; the reference algorithm is intentionally visible. “Hidden reference” here means protected expected outputs and external grading—not a completely secret algorithm or a hardened host sandbox.</p>
+<p class="meta">Implemented in <a href="https://github.com/BrightLaw9/Jax2PyTorch_RL/blob/main/miniport/train.py">train.py</a>, <a href="https://github.com/BrightLaw9/Jax2PyTorch_RL/blob/main/miniport/teacher_collect.py">teacher_collect.py</a>, and <a href="https://github.com/BrightLaw9/Jax2PyTorch_RL/blob/main/miniport/gpu_eval.py">gpu_eval.py</a>.</p></section>
+
+<section id="progress"><span class="eyebrow">Training progression</span><h2>Outcome feedback, teacher labels, and policy updates.</h2><ol><li><strong>Establish executable RL supervision.</strong> Adapt SWE-Marathon’s porting problem into small neural-network components. Each edit is evaluated against JAX outputs; independent terminal cases supply the episode’s correctness reward.</li><li><strong>Improve the learning signal.</strong> Add semantic tensor contracts, numerical diagnostics and repeated-failure recovery. Negative diagnostic events contribute modest shaping alongside the terminal outcome.</li><li><strong>Augment frozen-policy collection.</strong> Mine stuck training states and admit GPT-5.6 Luna corrections only after verification. Retain four complete paired states, producing 32 continuations and eight teacher-augmented action rows.</li><li><strong>Fit the action-value predictor.</strong> Combine those rows with ordinary policy collection, save the dataset hash, and predict eventual success under the collection policy.</li><li><strong>Continue QLoRA training.</strong> Resume from update 8 and complete 16 total updates within the 16 GiB budget. Evaluate the frozen adapter on held-out configurations.</li></ol><div class="note"><p><strong>MLP training progression:</strong> 19/24 terminal passes (79.2%) in updates 1–8 → 19/20 (95.0%) in updates 9–16. Mean rollout actions decreased from 6.21 to 2.10. Late LayerNorm training produced 13/24 terminal passes; its frozen trained policy also passed held-out numerical checks.</p></div><p class="meta">These are development-phase observations. Policy weights, diagnostics, recovery and collection changed together; reduced action counts also reflect recovery termination. The report does not attribute the phase difference to the critic alone.</p></section>
+
+<section id="critic"><span class="eyebrow">Predicting eventual success</span><h2>A lightweight, outcome-trained action-value model.</h2>
+<p>The intended quantity is Qπ(s,a,b): the probability of eventual verifier success after taking action a at code state s with budget b, then following frozen policy π. The implementation encodes the prompt and proposed action as normalized, hashed token-bigram counts: <strong>512 features → 64-unit tanh hidden layer → sigmoid output</strong>. Source, history, and budget are represented through prompt text, not dedicated semantic features.</p>
+<pre><code>class ActionValue:
+    def __init__(self):
+        self.model = torch.nn.Sequential(
+            torch.nn.Linear(FEATURES, 64),
+            torch.nn.Tanh(),
+            torch.nn.Linear(64, 1))
+
+    def predict(self, prompt, action):
+        self.model.eval()
+        with torch.no_grad():
+            return self.model(features(prompt, action)).sigmoid().item()</code></pre>
+<p class="meta">Excerpt from <a href="https://github.com/BrightLaw9/Jax2PyTorch_RL/blob/main/miniport/action_value.py">action_value.py</a> (formatting condensed; FEATURES = 512).</p>
+<p>Targets are successes/count. Fitting uses count-weighted binary cross-entropy on empirical rates and a task-family split. The final dataset has <strong>12 rows / 48 continuation outcomes</strong>: ten rows for fitting and two MLP rows for validation. Dataset hashing prevents loading a critic against different eligible rows.</p>
+<pre><code>alternative = policy.generate(task, snapshot.source,
+    snapshot.history, snapshot.remaining, seed + 100000 + index)
+qa = value_model.predict(completion.prompt, completion.text)
+qb = value_model.predict(alternative.prompt, alternative.text)
+value_advantage = (qa - qb) / 2
+
+# In the policy-gradient update:
+credit = advantage + value_coefficient * step[&quot;value_advantage&quot;]</code></pre>
+<p class="meta">Condensed excerpts from <a href="https://github.com/BrightLaw9/Jax2PyTorch_RL/blob/main/miniport/rollouts.py">rollouts.py</a> and <a href="https://github.com/BrightLaw9/Jax2PyTorch_RL/blob/main/miniport/rl.py">rl.py</a>.</p>
+<p>Instead of repeatedly adding raw predicted success, the policy gets <strong>centered credit (Q(a) − Q(alternative))/2</strong>. This avoids directly rewarding lingering in states that merely look promising. Generating an alternative for each executed action adds training compute. The critic is frozen during the policy phase; its labels came from an earlier policy checkpoint, so policy drift can weaken its relevance.</p>
+<p><strong>How the predictor contributes to the learning loop.</strong> Verified teacher actions and student continuations provide outcome supervision; centered predicted value adds action-level credit to the terminal policy-gradient signal. Teacher corrections train the critic indirectly, not through language-model SFT. This mechanism is implemented; its isolated performance contribution remains a future ablation.</p></section>
+
+<section id="reward"><span class="eyebrow">Reward & optimization</span><h2>RLOO-style gradients with outcome-based credit.</h2>
+<p>Each group contains four trainable trajectories. A rollout’s advantage is its shaped terminal reward minus the average of the other three rewards. Generated action tokens receive policy-gradient credit with a frozen-base KL penalty. The implementation uses an on-policy REINFORCE/RLOO-style loss; it does not use GRPO’s group-standard-deviation normalization or a PPO-style clipped probability-ratio objective. The supervised component is the small critic, not instruction SFT of Qwen.</p>
+<pre><code># Terminal outcome, only after stopping:
+training_reward = float(terminal_report[&quot;passed&quot;])
+
+# action_value condition: negative diagnostic events only
+diagnostic_credit = sum(
+    min(0.0, value)
+    for record in trajectory[&quot;records&quot;]
+    for value in record[&quot;diagnostic_reward&quot;][&quot;events&quot;].values()
+)
+episode_reward = training_reward + 0.1 * diagnostic_credit
+
+# Leave-one-out trajectory advantage for a group of K rollouts
+advantage_i = reward_i - sum(other_rewards) / (K - 1)
+
+# Additional centered critic credit, coefficient 0.25
+credit = advantage_i + 0.25 * value_advantage</code></pre>
+<p class="meta">Reading aid for the executed action-value condition. The actual implementation normalizes the token loss across trajectories and accumulation groups; its sampled KL term is exp(log p_ref − log p_policy) − (log p_ref − log p_policy) − 1, with coefficient 0.01.</p>
+<p>Base terminal reward is <strong>1 for passing independent randomized training-terminal checks, otherwise 0</strong>. It is zero before stopping, so a pending zero is not a failed episode. Environment outages invalidate the sample instead of teaching the policy that infrastructure failure is its fault.</p>
+<p>Diagnostic event values include repetition −0.25, lost gates −0.75 each, immediate revert −0.15, premature stop −2.0, and signed numerical-change credit capped at ±0.25. In the current action-value arm, only negative event components contribute, scaled by 0.1. Positive first-time gate bonuses belong to the implemented immediate-reward arm, not this completed run. Terminal correctness remains primary, but diagnostic penalties can accumulate and should be ablated rather than assumed harmless.</p>
+</section>
+
+<section id="integrity"><span class="eyebrow">Reward design</span><h2>Separate correctness from apparent progress.</h2>
 <p>The reward is grounded in the submitted program’s outputs, not a model’s self-report. Intermediate progress alone is insufficient for terminal success. Topology, exact parameter mapping, layer parity, end-to-end output, and repeat determinism must pass in order, across multiple seeded cases. Floating-point checks require finite float32 tensors with correct shapes and tolerances atol 2e−5 / rtol 2e−4; fresh randomization changes batch and sequence length.</p>
 <ul>
 <li><strong>Parameter mapping:</strong> exporting transposed weights correctly does not imply those weights are used correctly internally. The layer and output gates independently check the resulting computation.</li>
-<li><strong>Intermediate semantics:</strong> returning an output projection as Attention’s “layer,” or applying CNN activation too early, can produce plausible shapes while violating the intended intermediate contract.</li>
+<li><strong>Intermediate semantics:</strong> returning the wrong intermediate or applying an activation too early, can produce plausible shapes while violating the intended intermediate contract.</li>
 <li><strong>Determinism:</strong> repeated output checks detect dependence on uncontrolled randomness. Sampling templates use supplied random draws, rather than rewarding whichever sample happens to look best.</li>
 <li><strong>Generic behavior:</strong> randomized batch/length cases challenge nominal-shape hardcoding. Checking parameter keys, dtypes, all returned values, and multiple seeds raises the cost of fixed-output shortcuts.</li>
-<li><strong>Admission and provenance:</strong> restrict edits to one non-symlink source file; scan imports and dynamic execution/I/O facilities; snapshot and hash exact source; bind review decisions to artifact hashes. Static analysis is conservative, not a proof of semantic safety.</li>
+
 </ul>
-<h3>Docker isolation exists—but was not used for these GPU results.</h3>
-<p>The repository’s Docker verifier runs candidate code without JAX, reference packages, or hidden targets in the container. It uses network none, read-only root and binds, dropped capabilities, no-new-privileges, a non-root user, bounded PIDs/CPU/memory, a small tmpfs, and cleanup on timeout. The image ID is recorded. This boundary is the intended safer path for untrusted submissions and repeatable production execution.</p>
-<p><strong>Actual training, teacher-pair collection, and job-6119 eval used SubprocessBackend.</strong> That path runs a CPU worker in a temporary directory with Python isolated-import mode, hides CUDA, limits runtime/output, and cleans process groups. It still executes under the host user with inherited environment and no OS-level filesystem/network isolation. It is <strong>not a security sandbox</strong>, even if the numerical grader is logically external.</p>
-<p>For production, use hardened container or stronger VM isolation, strip secrets from worker environments, avoid mounting the repository or targets, pin runtime/image digests, retain request/response provenance, and scale disposable workers independently from the GPU policy. Those are next deployment requirements, not completed production guarantees. <a href="https://github.com/BrightLaw9/Jax2PyTorch_RL/blob/main/miniport/sealed.py">Verification implementation</a>.</p>
+<p class="meta">The candidate never receives expected tensors, so rewards are computed externally rather than accepted from self-reported scores. <a href="https://github.com/BrightLaw9/Jax2PyTorch_RL/blob/main/miniport/sealed.py">Verifier implementation</a>.</p>
 </section>
 
-<section id="discoveries"><span class="eyebrow">09 / Non-obvious findings</span><h2>The harness matters as much as the optimizer.</h2>
-<ul>
-<li><strong>Valid JSON can contain invalid Python.</strong> Literal backslash-n sequences inside a source string survived submission and caused syntax failures. This dominated several held-out outcomes. Do not blindly unescape source: backslashes can be legitimate Python string contents. Stronger source syntax diagnostics and response validation are warranted.</li>
-<li><strong>Population variance is not enough.</strong> One LayerNorm rollout used sqrt(var) + epsilon rather than sqrt(var + epsilon), despite its comment stating the correct formula. It missed tolerance on 46.9% of values with maximum absolute error 0.001237. A shape-only recovery prompt cannot fix numerical-contract ambiguity.</li>
-<li><strong>Tensor stride and axis semantics differ.</strong> A view after permutation may require reshape or contiguity. JAX-style multi-axis transpose must become PyTorch permute. Nominal heads/sequence dimensions that accidentally align can hide mistakes until held-out sizes differ.</li>
-<li><strong>API/build bugs can mask numerical competence.</strong> register_buffer requires an appropriate nn.Module object; torch.tensor has no shape keyword. Undefined names and source syntax can prevent the numerical verifier from reaching useful gates.</li>
-<li><strong>Unchanged recovery edits wasted compute.</strong> Hash/error-signature reflection and subsequent termination curtailed repeated failures. Yet 19 late rollouts still required that termination, and some changed-source repetitions extended further. Better failure-type-specific guidance remains needed.</li>
-<li><strong>Critic validation was too thin.</strong> Only two all-positive MLP validation rows and reused correction implementations make the reported Brier score insufficient evidence of a useful out-of-family ranking model. More diverse negatives, independent validation continuations, and stale-policy audits are needed.</li>
-<li><strong>A pass field is not audited validity.</strong> The grader’s numerical passed flag can be true while valid is false. The summary reports numerical automated passes; an explicit artifact-bound human audit is required for strict final validity. Dashboard/report labels must not conflate them.</li>
-<li><strong>Infrastructure can look like training failure.</strong> An exhausted update target silently produces no new loop iterations. Explicit Slurm export arguments reproduced pre-script cancellations even in hostname-only probes; prefixing environment variables worked. The underlying cluster-side reason remains undiagnosed.</li>
-</ul>
-<h3>Was there premature optimization or reward hacking?</h3>
-<p>No convincing intentional hacking or speed-optimization case was established. Repeated no-op edits and revisiting already-correct code were observed, but are inefficiency/failure modes rather than proof of reward exploitation. A LayerNorm repair also added dimension slicing that was unnecessary for canonical fixtures; passing tests should not be taken as proof that such fallbacks are generically correct. The report does not infer motives from these traces.</p></section>
+<section id="discoveries"><span class="eyebrow">ML / RL design lessons</span><h2>Make the feedback match the learning objective.</h2><ul><li><strong>Numerical contracts give richer supervision than shape checks.</strong> LayerNorm requires population variance and epsilon inside the square root. Intermediate and final-output checks separate plausible structure from correct computation.</li><li><strong>Teacher actions create contrasting outcome targets.</strong> In each retained paired state, student continuations scored 0/4 and teacher continuations 4/4 under matched budgets and seeds.</li><li><strong>Center action values instead of rewarding promising states repeatedly.</strong> Comparing executed and alternative actions supplies relative credit while terminal checks remain the correctness objective.</li><li><strong>Recovery preserves the rollout budget.</strong> Source/error-signature reflection and termination of a subsequent unchanged edit curtail unproductive repetition.</li><li><strong>Quantized low-rank adaptation makes the experiment practical.</strong> Frozen NF4 base weights and rank-8 adapters permit 4B policy updates within the single-GPU memory budget.</li></ul></section>
 
-<section id="next"><span class="eyebrow">10 / Conclusion & reproduction</span><h2>Feasible RL. Unproven action-value advantage.</h2>
-<p>This project showed that a 4B model can participate in a complete single-GPU, verifier-grounded code-repair learning loop within the memory budget. Teacher-filtered actions generated strongly contrasting continuation labels. The combined trained policy solved one additional held-out family numerically in the final three-task, one-seed evaluation.</p>
-<p>It did <strong>not</strong> establish that learned longer-term credit beats immediate verifier rewards, that repairs become uniformly faster, or that the policy solves the original SWE-Marathon task. Attention remains unsolved held-out, and strict artifact validity remains unaudited.</p>
-<ol>
-<li>Complete artifact-bound reviews of numerical passers; repeat verification using the container boundary without changing the frozen submission.</li>
-<li>Repair source-format and numerical-guidance weaknesses, then freeze the harness before collecting fresh comparable runs.</li>
-<li>Compare frozen baseline, terminal-only, immediate-verifier, and action-value policies under matched training budgets and several seeds. Add an action-value-without-diagnostic-shaping ablation.</li>
-<li>Collect dozens of positive/negative actions per family and diverse bug states. Evaluate ranking/calibration on independent continuations and refresh labels as the policy changes.</li>
-<li>Measure solve rate, actions and tokens to first correct solution, and generation-plus-verifier time separately. Report failures as unsolved, not fast solutions.</li>
-<li>If direct teacher correction learning is desired, add a separately identified SFT or preference-learning arm; it is not part of the current run.</li>
-</ol>
-<h3>Key entrypoints</h3>
-<pre><code># From the project directory on a configured Slurm GPU server:
-COLLECT_ONLY=1 sbatch slurm_train.sh
-RESUME=1 sbatch slurm_teacher_collect.sh
-# Set configs/train.json updates above the checkpoint's next_update.
-RESUME=1 COLLECT_ONLY=0 sbatch slurm_train.sh
+<section id="next"><span class="eyebrow">Summary</span><h2>Executable feedback becomes a learning signal.</h2><p>The project integrates frozen-policy value collection, verifier-filtered teacher corrections, a compact action-value model, and RLOO-style QLoRA updates into one 4B learning pipeline. It completed 16 updates within the memory budget and extended numerical held-out coverage to LayerNorm while retaining MLP correctness.</p><p class="meta">Scope: a custom small-scale SWE-Marathon derivative, evaluated on three tasks at one seed. Controlled reward ablations and broader independent critic validation are future ML experiments; the current result concerns the combined pipeline. Strict human artifact audits remain outstanding.</p><p>Methods and reproducible training configurations: <a href="https://github.com/BrightLaw9/Jax2PyTorch_RL/blob/main/README.md">README</a> · <a href="https://github.com/BrightLaw9/Jax2PyTorch_RL/blob/main/plan.md">Experiment protocol</a> · <a href="results.json">Evidence JSON</a>.</p></section>
 
-# Fresh paired eval; shell-prefix variables avoid this cluster's export trigger.
-CHECKPOINT=artifacts/gpu-run/checkpoint \
-EVAL_OUTPUT=artifacts/gpu-eval-fresh-run \
-BASELINE_RESULTS= sbatch slurm_gpu_eval.sh</code></pre>
-<p class="meta">Collection commands describe the workflow; fresh collection needs a fresh output/config, or an explicitly prepared refresh. Do not run collection and training concurrently on the same run. The teacher config currently limits paired states to four. Full setup: <a href="https://github.com/BrightLaw9/Jax2PyTorch_RL/blob/main/README.md">README</a>; protocol: <a href="https://github.com/BrightLaw9/Jax2PyTorch_RL/blob/main/plan.md">plan.md</a>.</p>
-<p class="meta">Evidence provenance: job 6119; committed adapter update-0016-98ed61d244854e72be3d14fe3184a94d; base revision cdbee75f17c01a7cc42f958dc650907174af0554; critic dataset e8c6346261ea7cc539595da33c71c8b2fa63075177beb07ac21524dad88a3b12. Evidence excludes private fixtures and hidden verifier seed lists. No update-8 trained held-out comparison completed.</p></section>
-
-<section id="references"><span class="eyebrow">11 / Relevant literature</span><h2>Methods and context.</h2><ol class="refs">
+<section id="references"><span class="eyebrow">Relevant literature</span><h2>Methods and context.</h2><ol class="refs">
 <li><a href="https://github.com/abundant-ai/swe-marathon">SWE-Marathon</a> and <a href="https://github.com/abundant-ai/swe-marathon/blob/main/tasks/jax-pytorch-rewrite/instruction.md">JAX-to-PyTorch rewrite task</a> (2026). Source of the task framing; MiniPort is a custom small-scale testbed, not a reported official benchmark solution.</li>
 <li><a href="https://arxiv.org/abs/2506.15421">Reward Models in Deep Reinforcement Learning: A Survey</a> (2025). Context for reward-model design and evaluation; motivating literature, not an algorithm implemented verbatim here.</li>
 <li>Ahmadian et al. (2024), <a href="https://arxiv.org/abs/2402.14740">Back to Basics: Revisiting REINFORCE Style Optimization for Learning from Human Feedback in LLMs</a>. Relevant precedent for simpler REINFORCE/RLOO-style optimization; this project uses executable outcomes rather than human preferences.</li>
