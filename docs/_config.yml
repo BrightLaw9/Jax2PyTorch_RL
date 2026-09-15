@@ -1,5 +1,5 @@
-title: JAX → PyTorch RL
-description: Learning to repair neural-network ports with verifier-grounded reinforcement learning.
+title: JAX → PyTorch RL · Pilot Research Report
+description: A one-GPU 4B code-repair pilot with action-value learning, teacher-augmented collection, QLoRA, and paired held-out evaluation.
 url: https://brightlaw9.github.io
 baseurl: /Jax2PyTorch_RL
 markdown: kramdown

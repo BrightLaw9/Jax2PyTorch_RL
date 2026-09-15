@@ -1,11 +1,14 @@
 # MiniPort
 
 Project repository: [Jax2PyTorch_RL](https://github.com/BrightLaw9/Jax2PyTorch_RL).
-Temporary project page: [brightlaw9.github.io/Jax2PyTorch_RL](https://brightlaw9.github.io/Jax2PyTorch_RL/).
+Research report: [brightlaw9.github.io/Jax2PyTorch_RL](https://brightlaw9.github.io/Jax2PyTorch_RL/).
 
-Pilot status (September 2026): 16 policy updates completed; held-out improvement
-has not yet been established. Paired CUDA evaluation is available through
-`slurm_gpu_eval.sh`, alongside the Mac evaluation path described below. Training
+Pilot status (September 2026): 16 policy updates completed. Paired CUDA evaluation
+improved numerical success from 1/3 to 2/3 held-out tasks; human integrity audits
+remain outstanding. This three-task, single-seed pilot does not isolate the
+critic's contribution or establish a latency improvement. See the report and
+[collected results](docs/results.json). CUDA evaluation is available through
+`slurm_gpu_eval.sh`, alongside the Mac evaluation path below. Training
 artifacts and private evaluation manifests are deliberately excluded from Git.
 
 **Research question: Does learning longer-term action value add anything beyond
@@ -13,8 +16,8 @@ immediate verifier rewards?** See [plan.md](plan.md) for the research protocol.
 
 Training runs on a Linux CUDA server in a Python venv, including CPU subprocess
 verification. **There is no Docker dependency in training or export.** Evaluation
-runs on an Apple Silicon Mac: MLX uses the Apple GPU to generate edits, and Docker
-checks the submitted code on CPU.
+can run on CUDA with CPU subprocess verification, or on an Apple Silicon Mac,
+where MLX generates edits and Docker checks submitted code on CPU.
 
 ## What is implemented
 
@@ -301,9 +304,11 @@ MINIPORT_MLX_TESTS=1 MINIPORT_DOCKER_TESTS=1 \
   .venv-mac/bin/python -m unittest discover -s tests -v
 ```
 
-No full 4B CUDA/Slurm training has run here. Cluster driver compatibility, peak
-VRAM, throughput, full-size merge and learned-policy performance remain to be
-measured. OOM does not trigger a silent smaller-model or backend fallback.
+The 4B CUDA/Slurm pilot completed 16 policy updates, with 12.55 GiB peak CUDA
+allocation during the additional eight updates. Paired held-out GPU evaluation
+completed; broader learned-policy performance and controlled reward comparisons
+remain to be measured. OOM does not trigger a silent smaller-model or backend
+fallback.
 
 Before research claims: calibrate meaningful multi-step repairs, expand beyond
 the small template set, increase continuation coverage, evaluate critic quality,

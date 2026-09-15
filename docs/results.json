@@ -1,0 +1,407 @@
+{
+  "summary": {
+    "baseline": {
+      "tasks": 3,
+      "automated_passes": 1,
+      "mean_actions": 5.666666666666667
+    },
+    "trained": {
+      "tasks": 3,
+      "automated_passes": 2,
+      "mean_actions": 4.666666666666667
+    },
+    "paired": {
+      "task_ids": [
+        "mlp-heldout",
+        "layernorm-heldout",
+        "attention-heldout"
+      ],
+      "policy_seed": 42,
+      "manifest_sha256": "917e9eaedf0b0225c34e44bf4084de4cba4d0ecbd0496309e7bd64d5655ed2cc",
+      "checkpoint": "artifacts/gpu-run/checkpoints/update-0016-98ed61d244854e72be3d14fe3184a94d",
+      "completed_updates": 16
+    }
+  },
+  "evaluation": [
+    {
+      "task_id": "attention-heldout",
+      "condition": "baseline",
+      "actions": 9,
+      "generated_tokens": 8057,
+      "policy_seed": 42,
+      "hidden_parity_passes": false,
+      "fresh_randomization_passes": false,
+      "pytorch_only_passes": true,
+      "integrity_audit_passes": false,
+      "valid": false,
+      "evaluation_terminal_reward": 0,
+      "passed": false,
+      "error_type": "invalid_candidate_result",
+      "isolation": "subprocess",
+      "submission_sha256": "29439c21a42a5b61c5bbbbd1c141576ee4052960989961eb6c498f4a22834a6c",
+      "generation_wall_seconds": 476.6791786607355,
+      "first_visible_pass_action_index": null,
+      "generation_seconds_to_first_visible_pass": null
+    },
+    {
+      "task_id": "layernorm-heldout",
+      "condition": "baseline",
+      "actions": 5,
+      "generated_tokens": 2183,
+      "policy_seed": 42,
+      "hidden_parity_passes": null,
+      "fresh_randomization_passes": null,
+      "pytorch_only_passes": null,
+      "integrity_audit_passes": null,
+      "valid": false,
+      "evaluation_terminal_reward": null,
+      "passed": false,
+      "error_type": "static_scan_failed",
+      "isolation": null,
+      "submission_sha256": "b1792d93e2285e3da00de3bff04afb4ddcaa940d1312807b4a834af708cfd49f",
+      "generation_wall_seconds": 129.25341527257115,
+      "first_visible_pass_action_index": null,
+      "generation_seconds_to_first_visible_pass": null
+    },
+    {
+      "task_id": "mlp-heldout",
+      "condition": "baseline",
+      "actions": 3,
+      "generated_tokens": 796,
+      "policy_seed": 42,
+      "hidden_parity_passes": true,
+      "fresh_randomization_passes": true,
+      "pytorch_only_passes": true,
+      "integrity_audit_passes": false,
+      "valid": false,
+      "evaluation_terminal_reward": 0,
+      "passed": true,
+      "error_type": null,
+      "isolation": "subprocess",
+      "submission_sha256": "2e17740b9fdef6d8b08799f6dd6283f43938095a3ef6f69ec340627cb5b58ed1",
+      "generation_wall_seconds": 47.23178264684975,
+      "first_visible_pass_action_index": 1,
+      "generation_seconds_to_first_visible_pass": 46.83705864986405
+    },
+    {
+      "task_id": "attention-heldout",
+      "condition": "trained",
+      "actions": 7,
+      "generated_tokens": 5685,
+      "policy_seed": 42,
+      "hidden_parity_passes": null,
+      "fresh_randomization_passes": null,
+      "pytorch_only_passes": null,
+      "integrity_audit_passes": null,
+      "valid": false,
+      "evaluation_terminal_reward": null,
+      "passed": false,
+      "error_type": "static_scan_failed",
+      "isolation": null,
+      "submission_sha256": "21bc154f4df8317ccb31242d6cdc6df353d3ea95937dd7bcdd82521fd83cbb46",
+      "generation_wall_seconds": 545.2132431445643,
+      "first_visible_pass_action_index": null,
+      "generation_seconds_to_first_visible_pass": null
+    },
+    {
+      "task_id": "layernorm-heldout",
+      "condition": "trained",
+      "actions": 4,
+      "generated_tokens": 1286,
+      "policy_seed": 42,
+      "hidden_parity_passes": true,
+      "fresh_randomization_passes": true,
+      "pytorch_only_passes": true,
+      "integrity_audit_passes": false,
+      "valid": false,
+      "evaluation_terminal_reward": 0,
+      "passed": true,
+      "error_type": null,
+      "isolation": "subprocess",
+      "submission_sha256": "9d5583788ff01479934fdd0d07ca984f7d0407999d2587732d5afb5ca2531275",
+      "generation_wall_seconds": 123.53960363799706,
+      "first_visible_pass_action_index": 2,
+      "generation_seconds_to_first_visible_pass": 122.8308904953301
+    },
+    {
+      "task_id": "mlp-heldout",
+      "condition": "trained",
+      "actions": 3,
+      "generated_tokens": 693,
+      "policy_seed": 42,
+      "hidden_parity_passes": true,
+      "fresh_randomization_passes": true,
+      "pytorch_only_passes": true,
+      "integrity_audit_passes": false,
+      "valid": false,
+      "evaluation_terminal_reward": 0,
+      "passed": true,
+      "error_type": null,
+      "isolation": "subprocess",
+      "submission_sha256": "b7597f2c9991bcb1ccf1016f8a0e74262d5df21eb932831cfeafb70b5ccebfea",
+      "generation_wall_seconds": 66.66510160313919,
+      "first_visible_pass_action_index": 1,
+      "generation_seconds_to_first_visible_pass": 66.06723660416901
+    }
+  ],
+  "training": {
+    "updates1to8:mlp-0": {
+      "passes": 19,
+      "episodes": 24,
+      "actions": 149,
+      "recovery_terminations": 0
+    },
+    "updates1to8:cnn-0": {
+      "passes": 0,
+      "episodes": 8,
+      "actions": 144,
+      "recovery_terminations": 0
+    },
+    "updates1to8:layernorm-0": {
+      "passes": 10,
+      "episodes": 16,
+      "actions": 131,
+      "recovery_terminations": 0
+    },
+    "updates9to16:attention-0": {
+      "passes": 12,
+      "episodes": 20,
+      "actions": 103,
+      "recovery_terminations": 8
+    },
+    "updates9to16:mlp-0": {
+      "passes": 19,
+      "episodes": 20,
+      "actions": 42,
+      "recovery_terminations": 1
+    },
+    "updates9to16:layernorm-0": {
+      "passes": 13,
+      "episodes": 24,
+      "actions": 115,
+      "recovery_terminations": 10
+    },
+    "updates1to8:attention-0": {
+      "passes": 4,
+      "episodes": 16,
+      "actions": 227,
+      "recovery_terminations": 0
+    }
+  },
+  "teacher_rows": [
+    {
+      "task_id": "layernorm-0",
+      "pair_id": 0,
+      "pair_role": "student_negative",
+      "successes": 0,
+      "count": 4,
+      "remaining": 16
+    },
+    {
+      "task_id": "layernorm-0",
+      "pair_id": 0,
+      "pair_role": "teacher_positive",
+      "successes": 4,
+      "count": 4,
+      "remaining": 16
+    },
+    {
+      "task_id": "attention-0",
+      "pair_id": 1,
+      "pair_role": "student_negative",
+      "successes": 0,
+      "count": 4,
+      "remaining": 14
+    },
+    {
+      "task_id": "attention-0",
+      "pair_id": 1,
+      "pair_role": "teacher_positive",
+      "successes": 4,
+      "count": 4,
+      "remaining": 14
+    },
+    {
+      "task_id": "attention-0",
+      "pair_id": 2,
+      "pair_role": "student_negative",
+      "successes": 0,
+      "count": 4,
+      "remaining": 15
+    },
+    {
+      "task_id": "attention-0",
+      "pair_id": 2,
+      "pair_role": "teacher_positive",
+      "successes": 4,
+      "count": 4,
+      "remaining": 15
+    },
+    {
+      "task_id": "attention-0",
+      "pair_id": 3,
+      "pair_role": "student_negative",
+      "successes": 0,
+      "count": 4,
+      "remaining": 15
+    },
+    {
+      "task_id": "attention-0",
+      "pair_id": 3,
+      "pair_role": "teacher_positive",
+      "successes": 4,
+      "count": 4,
+      "remaining": 15
+    }
+  ],
+  "repairs": [
+    {
+      "episode": "artifacts/gpu-eval-update16-fresh-paired-20260915/baseline/mlp-heldout",
+      "index": 1,
+      "feedback": {
+        "status": "fail",
+        "failed_gate": "topology",
+        "max_abs_error": null,
+        "failure_location": "integrity",
+        "error_type": "static_scan_failed",
+        "static_scan_findings": [
+          {
+            "line": 23,
+            "rule": "syntax",
+            "message": "unexpected character after line continuation character"
+          }
+        ]
+      },
+      "diff": "--- before/candidate.py\n+++ after/candidate.py\n@@ -20,22 +20,16 @@\n             self.w1, self.b1, self.w2, self.b2 = w1, b1, w2, b2\n \n         def export_parameters(self):\n-            return {\\n                \"w1\": self.w1.T,  # transposed to match torch layout\n-                \"w2\": self.w2.T,  # transposed to match torch layout\n-                \"b1\": self.b1,    # unchanged\n-                \"b2\": self.b2     # unchanged\n-            }\n+            return {\"w1\": self.w1.T, \"w2\": self.w2.T, \"b1\": self.b1, \"b2\": self.b2}\n \n         def run(self, x, draws):\n-            # Forward pass: layer = ReLU(x @ w1 + b1), output = layer @ w2 + b2\n             layer = torch.relu(x @ self.w1 + self.b1)\n             output = layer @ self.w2 + self.b2\n-            return {\\n                \"layer\": layer,  # [batch, sequence, hidden]\n-                \"output\": output   # [batch, sequence, width]\n-            }\n+            return {\"layer\": layer, \"output\": output}\n \n         def run_cached(self, x, draws):\n-            # For RoPE cache, but mlp has no cache, so only run is needed\n-            return self.run(x, draws)\n+            layer = torch.relu(x @ self.w1 + self.b1)\n+            output = layer @ self.w2 + self.b2\n+            return {\"layer\": layer, \"output\": output}\n \n     return MLP(config)"
+    },
+    {
+      "episode": "artifacts/gpu-eval-update16-fresh-paired-20260915/trained/layernorm-heldout",
+      "index": 2,
+      "feedback": {
+        "status": "fail",
+        "failed_gate": "topology",
+        "max_abs_error": null,
+        "failure_location": "integrity",
+        "error_type": "static_scan_failed",
+        "static_scan_findings": [
+          {
+            "line": 28,
+            "rule": "syntax",
+            "message": "unexpected character after line continuation character"
+          }
+        ]
+      },
+      "diff": "--- before/candidate.py\n+++ after/candidate.py\n@@ -25,7 +25,7 @@\n             self.weight = weight\n \n         def export_parameters(self):\n-            return {\\n                \"scale\": self.scale, \\n                \"bias\": self.bias, \\n                \"weight\": self.weight.T \\n            }\n+            return {\"scale\": self.scale, \"bias\": self.bias, \"weight\": self.weight.T}\n \n         def run(self, x, draws):\n             # Normalize the last axis using population variance (correction=0)\n@@ -41,6 +41,6 @@\n             # Output: residual connection\n             output = x + layer @ self.weight\n             \n-            return {\\n                \"layer\": layer, \\n                \"output\": output \\n            }\n+            return {\"layer\": layer, \"output\": output}\n \n     return LayerNorm(config)"
+    },
+    {
+      "episode": "artifacts/gpu-eval-update16-fresh-paired-20260915/trained/mlp-heldout",
+      "index": 1,
+      "feedback": {
+        "status": "fail",
+        "failed_gate": "topology",
+        "max_abs_error": null,
+        "failure_location": "integrity",
+        "error_type": "static_scan_failed",
+        "static_scan_findings": [
+          {
+            "line": 23,
+            "rule": "syntax",
+            "message": "unexpected character after line continuation character"
+          }
+        ]
+      },
+      "diff": "--- before/candidate.py\n+++ after/candidate.py\n@@ -20,15 +20,14 @@\n             self.w1, self.b1, self.w2, self.b2 = w1, b1, w2, b2\n \n         def export_parameters(self):\n-            return {\\n                \"w1\": self.w1.T, \\n                \"w2\": self.w2.T, \\n                \"b1\": self.b1, \\n                \"b2\": self.b2 \\n            }\n+            return {\"w1\": self.w1.T, \"w2\": self.w2.T, \"b1\": self.b1, \"b2\": self.b2}\n \n         def run(self, x, draws):\n             layer = torch.relu(x @ self.w1 + self.b1)\n             output = layer @ self.w2 + self.b2\n-            return {\\n                \"layer\": layer, \\n                \"output\": output \\n            }\n+            return {\"layer\": layer, \"output\": output}\n \n         def run_cached(self, x, draws):\n-            # Not used in mlp; only for completeness\n             return self.run(x, draws)\n \n     return MLP(config)"
+    },
+    {
+      "episode": "update-10-group-0-member-1",
+      "task_id": "attention-0",
+      "index": 2,
+      "feedback": {
+        "status": "fail",
+        "failed_gate": "layer",
+        "max_abs_error": null,
+        "failure_location": "attention.layer",
+        "error_type": "invalid_candidate_result",
+        "diagnostic": {
+          "code": "type_error",
+          "origin": "candidate_runtime",
+          "message": "transpose() received an invalid combination of arguments - got (int, int, int, int), but expected one of:\n * (int dim0, int dim1)\n * (name dim0, name dim1)\n",
+          "stage": "run",
+          "line": 40,
+          "exception_type": "TypeError"
+        }
+      },
+      "diff": "--- before/candidate.py\n+++ after/candidate.py\n@@ -37,9 +37,9 @@\n         v = v.reshape(b, n, heads, head_dim)\n         \n         # Transpose to [batch, heads, sequence, head_dim]\n-        q = q.transpose(0, 2, 1, 3)\n-        k = k.transpose(0, 2, 1, 3)\n-        v = v.transpose(0, 2, 1, 3)\n+        q = q.permute(0, 2, 1, 3)\n+        k = k.permute(0, 2, 1, 3)\n+        v = v.permute(0, 2, 1, 3)\n         \n         # Compute attention scores\n         scores = torch.matmul(q, k.transpose(-2, -1)) / torch.sqrt(torch.tensor(head_dim, dtype=torch.float32))\n@@ -55,7 +55,7 @@\n         attended = torch.matmul(attn_probs, v)\n         \n         # Reshape back to [batch, sequence, width]\n-        attended = attended.transpose(0, 2, 1, 3).reshape(b, n, heads * head_dim)\n+        attended = attended.permute(0, 2, 1, 3).reshape(b, n, heads * head_dim)\n         \n         # Output projection\n         output = attended @ self.out\n"
+    },
+    {
+      "episode": "update-14-group-1-member-2",
+      "task_id": "attention-0",
+      "index": 4,
+      "feedback": {
+        "status": "fail",
+        "failed_gate": "layer",
+        "max_abs_error": null,
+        "failure_location": "attention.layer",
+        "error_type": "invalid_candidate_result",
+        "diagnostic": {
+          "code": "runtime_error",
+          "origin": "candidate_runtime",
+          "message": "name 'self_dim' is not defined",
+          "stage": "run",
+          "line": 28,
+          "exception_type": "NameError"
+        }
+      },
+      "diff": "--- before/candidate.py\n+++ after/candidate.py\n@@ -25,7 +25,7 @@\n         projected = x @ self.qkv\n         q, k, v = torch.split(projected, w, dim=-1)\n         q = q.view(b, n, self.heads, self.head_dim).transpose(1, 2).contiguous().view(b, self.heads, n, self.head_dim)\n-        k = k.view(b, n, self.heads, self_dim).transpose(1, 2).contiguous().view(b, self.heads, n, self.head_dim)\n+        k = k.view(b, n, self.heads, self.head_dim).transpose(1, 2).contiguous().view(b, self.heads, n, self.head_dim)\n         v = v.view(b, n, self.heads, self.head_dim).transpose(1, 2).contiguous().view(b, self.heads, n, self.head_dim)\n         return q, k, v\n     \n"
+    },
+    {
+      "episode": "update-8-group-0-member-3",
+      "task_id": "layernorm-0",
+      "index": 3,
+      "feedback": {
+        "status": "fail",
+        "failed_gate": "parameters",
+        "max_abs_error": null,
+        "failure_location": "layernorm.parameters",
+        "error_type": "invalid_candidate_result",
+        "diagnostic": {
+          "code": "type_error",
+          "origin": "candidate_runtime",
+          "message": "tensor() got an unexpected keyword argument 'shape'",
+          "stage": "load_parameters",
+          "line": 20,
+          "exception_type": "TypeError"
+        }
+      },
+      "diff": "--- before/candidate.py\n+++ after/candidate.py\n@@ -17,12 +17,19 @@\n             return \"layernorm\"\n \n         def load_parameters(self, parameters):\n-            scale = torch.tensor(parameters[\"scale\"], dtype=torch.float32, shape=(self.width,))\n-            bias = torch.tensor(parameters[\"bias\"], dtype=torch.float32, shape=(self.width,))\n-            weight = torch.tensor(parameters[\"weight\"], dtype=torch.float32, shape=(self.width, self.width))\n+            scale = torch.tensor(parameters[\"scale\"], dtype=torch.float32)\n+            bias = torch.tensor(parameters[\"bias\"], dtype=torch.float32)\n+            weight = torch.tensor(parameters[\"weight\"], dtype=torch.float32)\n             self.scale = scale\n             self.bias = bias\n             self.weight = weight\n+            # Reshape to match expected dimensions\n+            if self.scale.shape[0] != self.width:\n+                self.scale = self.scale.view(self.width)\n+            if self.bias.shape[0] != self.width:\n+                self.bias = self.bias.view(self.width)\n+            if self.weight.shape[0] != self.width or self.weight.shape[1] != self.width:\n+                self.weight = self.weight[:self.width, :self.width]\n \n         def export_parameters(self):\n             return {\"scale\": self.scale, \"bias\": self.bias, \"weight\": self.weight.transpose(1, 0)}\n"
+    },
+    {
+      "episode": "update-8-group-1-member-1",
+      "task_id": "attention-0",
+      "index": 1,
+      "feedback": {
+        "status": "fail",
+        "failed_gate": "layer",
+        "max_abs_error": null,
+        "failure_location": "attention.layer",
+        "error_type": "invalid_candidate_result",
+        "diagnostic": {
+          "code": "runtime_error",
+          "origin": "candidate_runtime",
+          "message": "view size is not compatible with input tensor's size and stride (at least one dimension spans across two contiguous subspaces). Use .reshape(...) instead.",
+          "stage": "run",
+          "line": 65,
+          "exception_type": "RuntimeError"
+        }
+      },
+      "diff": "--- before/candidate.py\n+++ after/candidate.py\n@@ -1,7 +1,6 @@\n import torch\n import torch.nn as nn\n import math\n-\n \n class Attention:\n     def __init__(self, config):\n@@ -35,9 +34,9 @@\n         q, k, v = qkv_split[0], qkv_split[1], qkv_split[2]\n         \n         # Reshape to [batch, heads, sequence, head_dim]\n-        q = q.view(b, seq_len, self.heads, self.head_dim)\n-        k = k.view(b, seq_len, self.heads, self.head_dim)\n-        v = v.view(b, seq_len, self.heads, self.head_dim)\n+        q = q.reshape(b, seq_len, self.heads, self.head_dim)\n+        k = k.reshape(b, seq_len, self.heads, self.head_dim)\n+        v = v.reshape(b, seq_len, self.heads, self.head_dim)\n         \n         # Permute to [batch, heads, sequence, head_dim]\n         q = q.permute(0, 2, 1, 3)\n@@ -62,7 +61,7 @@\n         attended = attended.permute(0, 2, 1, 3)\n         \n         # Reshape to merged layer [batch, sequence, width]\n-        layer = attended.view(b, seq_len, self.heads * self.head_dim)\n+        layer = attended.reshape(b, seq_len, self.heads * self.head_dim)\n         \n         # Output projection\n         output = layer @ self.out\n"
+    }
+  ],
+  "collection_note": "Aggregated from GPU job 6119 and artifacts/gpu-run. No hidden fixture values or private verifier seed lists are included.",
+  "interpretation": {
+    "metric": "automated_passes counts numerical parity and fresh randomization, not strict valid/audited passes",
+    "strict_valid_baseline": 0,
+    "strict_valid_trained": 0,
+    "causal_action_value_effect_established": false
+  }
+}
